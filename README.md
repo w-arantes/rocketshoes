@@ -1,13 +1,10 @@
-<h1 align="center">
-<br>
-  <img src="src/assets/images/logo.svg" alt="Rocketshoes" width="90">
-<br>
-<br>
-Rocketshoes
-</h1>
 
-<p align="center">Rocketshoes</p>
-<p align="center"></p>
+<h4 align="center">
+  NetShoes Clone App with React and Redux.
+</h4>
+
+![App Screenshot](https://res.cloudinary.com/w-arantes/image/upload/v1584329024/01-rocketshoes_sdc7tg.png)
+![App Screenshot](https://res.cloudinary.com/w-arantes/image/upload/v1584329023/Screenshot_from_2020-03-16_00-23-03_tsacqs.png)
 
 <p align="center">
   <a href="http://makeapullrequest.com">
