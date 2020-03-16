@@ -34,7 +34,11 @@ Libraries featured in this project.
 - [**Polished**](https://polished.js.org/)
 - [**React Tostify**](https://fkhadra.github.io/react-toastify/)
 - [**React Icons**](https://react-icons.netlify.com/)
-- [**styled-components**](hhttps://www.styled-components.com/)
+- [**styled-components**](https://www.styled-components.com/)
+
+## Demo on  Heroku
+
+[**Demo link**](https://rocketshoes-warantes.herokuapp.com/)
 
 
 This project was developed at the RocketSeat GoStack Bootcamp 10.0
