@@ -1,91 +1,96 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { MdAddShoppingCart } from 'react-icons/md';
+import Loader from 'react-loader-spinner';
+import { formatPrice } from '../../util/format';
+import api from '../../services/api';
 
-import { ProductList } from './styles';
+import * as CartActions from '../../store/modules/cart/actions';
 
-import shoe1 from '../../assets/images/shoes/shoe1.jpg';
+import { ProductList, Loading } from './styles';
 
-export default function Home() {
-  return (
-    <ProductList>
-      <li>
-        <img src={shoe1} alt="Tênis" />
-        <strong>Tênis New Balance</strong>
-        <span>R$179,90</span>
+class Home extends Component {
+  state = {
+    products: [],
+    loading: true,
+    didMount: false,
+  };
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" /> 3
-          </div>
+  async componentDidMount() {
+    const response = await api.get('products');
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img src={shoe1} alt="Tênis" />
-        <strong>Tênis New Balance</strong>
-        <span>R$179,90</span>
+    const data = response.data.map(product => ({
+      ...product,
+      priceFormatted: formatPrice(product.price),
+    }));
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" /> 3
-          </div>
+    setTimeout(() => {
+      this.setState({ products: data, loading: false });
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img src={shoe1} alt="Tênis" />
-        <strong>Tênis New Balance</strong>
-        <span>R$179,90</span>
+      setTimeout(() => {
+        this.setState({ didMount: true });
+      }, 0);
+    }, 1000);
+  }
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" /> 3
-          </div>
+  handleAddProduct = id => {
+    const { addToCartRequest } = this.props;
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img src={shoe1} alt="Tênis" />
-        <strong>Tênis New Balance</strong>
-        <span>R$179,90</span>
+    addToCartRequest(id);
+  };
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" /> 3
-          </div>
+  render() {
+    const { products, loading, didMount } = this.state;
+    const { amount, addingIds } = this.props;
 
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img src={shoe1} alt="Tênis" />
-        <strong>Tênis New Balance</strong>
-        <span>R$179,90</span>
+    if (loading) {
+      return (
+        <Loading>
+          <Loader type="MutatingDot" color="#FFFFFF" />
+        </Loading>
+      );
+    }
+    return (
+      <ProductList didMount={didMount ? 1 : 0}>
+        {products.map(product => (
+          <li key={product.id}>
+            <img src={product.image} alt={product.title} />
+            <strong>{product.title}</strong>
+            <span>{product.priceFormatted}</span>
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" /> 3
-          </div>
-
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-      <li>
-        <img src={shoe1} alt="Tênis" />
-        <strong>Tênis New Balance</strong>
-        <span>R$179,90</span>
-
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="#FFF" /> 3
-          </div>
-
-          <span>ADICIONAR AO CARRINHO</span>
-        </button>
-      </li>
-    </ProductList>
-  );
+            <button
+              type="button"
+              onClick={() => this.handleAddProduct(product.id)}
+              disabled={addingIds.includes(product.id)}
+            >
+              <div>
+                <MdAddShoppingCart size={16} color="#FFF" />{' '}
+                {amount[product.id] || 0}
+                {addingIds.includes(product.id) && (
+                  <div className="loading">
+                    <Loader type="Oval" color="#FFF" width={18} height={18} />
+                  </div>
+                )}
+              </div>
+              <span>ADD TO CART</span>
+            </button>
+          </li>
+        ))}
+      </ProductList>
+    );
+  }
 }
+
+const mapStateToProps = state => ({
+  amount: state.cart.products.reduce((amount, product) => {
+    amount[product.id] = product.amount;
+    return amount;
+  }, {}),
+  addingIds: state.cart.addingIds,
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
