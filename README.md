@@ -1,4 +1,6 @@
-
+<h1 align="center">
+  Rocketshoes
+</h1>
 <h4 align="center">
   NetShoes Clone App with React and Redux.
 </h4>
